@@ -57,17 +57,7 @@ impl Game {
         coord.1 = rng.gen_range(0..5);
 
         self.snake.push(coord);
-
-        let mut coord = (0, 0);
-
-        coord.0 = rng.gen_range(0..5);
-        coord.1 = rng.gen_range(0..5);
-        while coord == self.snake[0] {
-            coord.0 = rng.gen_range(0..5);
-            coord.1 = rng.gen_range(0..5);
-        }
-
-        self.update_grid();
+        self.move_food();
     }
 
     fn update_grid(&mut self) {
@@ -99,8 +89,7 @@ impl Game {
     pub fn move_snake(&mut self, direction: Direction) {
         if let Some(i) = &self.direction {
             let valid_moves = i.get_valid_dir();
-            let mut change_x = 0;
-            let mut change_y = 0;
+            let mut coord = self.snake[self.snake.len() - 1];
             if direction == valid_moves.0
                 || direction == valid_moves.1
                 || direction == valid_moves.2
@@ -108,17 +97,14 @@ impl Game {
                 // Change in y is reversed since a smaller y value means an array closer to the
                 // top. Change in x is the still the same though.
                 match direction {
-                    Direction::Up => change_y -= 1,
-                    Direction::Down => change_y += 1,
-                    Direction::Left => change_x -= 1,
-                    Direction::Right => change_x += 1,
+                    Direction::Up => coord.1 -= 1,
+                    Direction::Down => coord.1 += 1,
+                    Direction::Left => coord.0 -= 1,
+                    Direction::Right => coord.0 += 1,
                 }
             } else {
                 panic!("Direction is not valid.");
             }
-            let mut coord = self.snake[self.snake.len() - 1];
-            coord.1 += change_y;
-            coord.0 += change_x;
             self.snake.push(coord);
 
             if coord.0 != self.food.0 || coord.1 != self.food.1 {
@@ -129,19 +115,15 @@ impl Game {
                 self.move_food();
             }
         } else {
-            let mut change_x = 0;
-            let mut change_y = 0;
+            let mut coord = self.snake[self.snake.len() - 1];
 
             match direction {
-                Direction::Up => change_y -= 1,
-                Direction::Down => change_y += 1,
-                Direction::Left => change_x -= 1,
-                Direction::Right => change_x += 1,
+                Direction::Up => coord.1 -= 1,
+                Direction::Down => coord.1 += 1,
+                Direction::Left => coord.0 -= 1,
+                Direction::Right => coord.0 += 1,
             }
 
-            let mut coord = self.snake[self.snake.len() - 1];
-            coord.1 += change_y;
-            coord.0 += change_x;
             self.snake.push(coord);
 
             if coord.0 != self.food.0 || coord.1 != self.food.1 {

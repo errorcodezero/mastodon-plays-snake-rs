@@ -9,4 +9,6 @@ fn main() {
     println!("{}", game.to_string());
     game.move_snake(Direction::Up);
     println!("{}", game.to_string());
+    game.move_snake(Direction::Left);
+    println!("{}", game.to_string());
 }
