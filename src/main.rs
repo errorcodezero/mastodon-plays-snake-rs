@@ -1,12 +1,17 @@
-use crate::game::Game;
+use crate::game::{Direction, Game};
 
 pub mod game;
 
 fn main() {
     let mut game = Game::new();
-    game.put(0, 0, game::Block::Food);
-    game.put(1, 1, game::Block::SnakeHead);
-    game.put(2, 2, game::Block::SnakeBody);
+    game.setup();
+    let mut dir = Direction::Down;
+
+    dir = dir.get_valid_dir().0;
+
+    println!("{:?}", dir);
 
     println!("{}", &game.to_string());
+    game.inc_score();
+    println!("Score: {}", &game.get_score());
 }
