@@ -1,5 +1,3 @@
-use core::panic;
-
 use rand::{Rng, thread_rng};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
