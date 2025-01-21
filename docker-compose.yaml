@@ -1,0 +1,7 @@
+services:
+ bot:
+  env_file: .env
+  restart: always
+  build:
+     context: ./
+     dockerfile: Dockerfile
