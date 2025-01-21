@@ -56,20 +56,22 @@ impl Game {
         coord.0 = rng.gen_range(0..5);
         coord.1 = rng.gen_range(0..5);
 
-        self.snake.push(coord);
+        self.snake = vec![coord];
         self.move_food();
     }
 
     fn update_grid(&mut self) {
         self.grid = [[Block::Empty; 5]; 5];
-        self.grid[self.snake[self.snake.len() - 1].1][self.snake[self.snake.len() - 1].0] =
-            Block::SnakeHead;
+
         self.snake
             .iter()
             .rev()
             .skip(1)
             .for_each(|x| self.grid[x.1][x.0] = Block::SnakeBody);
+
         self.grid[self.food.1][self.food.0] = Block::Food;
+        self.grid[self.snake[self.snake.len() - 1].1][self.snake[self.snake.len() - 1].0] =
+            Block::SnakeHead;
     }
 
     fn move_food(&mut self) {
@@ -90,6 +92,7 @@ impl Game {
         if let Some(i) = &self.direction {
             let valid_moves = i.get_valid_dir();
             let mut coord = self.snake[self.snake.len() - 1];
+            let mut flag = false;
             if direction == valid_moves.0
                 || direction == valid_moves.1
                 || direction == valid_moves.2
@@ -97,41 +100,102 @@ impl Game {
                 // Change in y is reversed since a smaller y value means an array closer to the
                 // top. Change in x is the still the same though.
                 match direction {
-                    Direction::Up => coord.1 -= 1,
-                    Direction::Down => coord.1 += 1,
-                    Direction::Left => coord.0 -= 1,
-                    Direction::Right => coord.0 += 1,
+                    Direction::Up => {
+                        if coord.1 > 0 {
+                            coord.1 -= 1
+                        } else {
+                            self.setup();
+                            flag = true;
+                        }
+                    }
+                    Direction::Down => {
+                        if coord.1 < 4 {
+                            coord.1 += 1
+                        } else {
+                            self.setup();
+                            flag = true;
+                        }
+                    }
+                    Direction::Left => {
+                        if coord.0 > 0 {
+                            coord.0 -= 1
+                        } else {
+                            self.setup();
+                            flag = true;
+                        }
+                    }
+                    Direction::Right => {
+                        if coord.0 < 4 {
+                            coord.0 += 1
+                        } else {
+                            self.setup();
+                            flag = true;
+                        }
+                    }
                 }
             } else {
                 panic!("Direction is not valid.");
             }
-            self.snake.push(coord);
+            if !flag {
+                self.snake.push(coord);
 
-            if coord.0 != self.food.0 || coord.1 != self.food.1 {
-                self.snake.remove(0);
-                self.update_grid();
-            } else {
-                self.inc_score();
-                self.move_food();
+                if coord.0 != self.food.0 || coord.1 != self.food.1 {
+                    self.snake.remove(0);
+                    self.update_grid();
+                } else {
+                    self.inc_score();
+                    self.move_food();
+                }
             }
         } else {
             let mut coord = self.snake[self.snake.len() - 1];
+            let mut flag = false;
 
             match direction {
-                Direction::Up => coord.1 -= 1,
-                Direction::Down => coord.1 += 1,
-                Direction::Left => coord.0 -= 1,
-                Direction::Right => coord.0 += 1,
+                Direction::Up => {
+                    if coord.1 > 0 {
+                        coord.1 -= 1
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
+                Direction::Down => {
+                    if coord.1 < 4 {
+                        coord.1 += 1
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
+                Direction::Left => {
+                    if coord.0 > 0 {
+                        coord.0 -= 1
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
+                Direction::Right => {
+                    if coord.0 < 4 {
+                        coord.0 += 1
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
             }
 
-            self.snake.push(coord);
+            if !flag {
+                self.snake.push(coord);
 
-            if coord.0 != self.food.0 || coord.1 != self.food.1 {
-                self.snake.remove(0);
-                self.update_grid();
-            } else {
-                self.inc_score();
-                self.move_food();
+                if coord.0 != self.food.0 || coord.1 != self.food.1 {
+                    self.snake.remove(0);
+                    self.update_grid();
+                } else {
+                    self.inc_score();
+                    self.move_food();
+                }
             }
         }
     }
