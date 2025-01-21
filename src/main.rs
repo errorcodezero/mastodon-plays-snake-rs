@@ -38,7 +38,10 @@ async fn main() -> Result<(), megalodon::error::Error> {
             ..Default::default()
         };
         let _post = client
-            .post_status(game.to_string(), Some(&post_options))
+            .post_status(
+                game.to_string() + "\n\n" + "Score: " + &game.get_score().to_string(),
+                Some(&post_options),
+            )
             .await?;
         time::sleep(Duration::from_secs(1860)).await;
         let get_options = GetAccountStatusesInputOptions {

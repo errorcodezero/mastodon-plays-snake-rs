@@ -1,4 +1,4 @@
-use rand::{Rng, thread_rng};
+use rand::{thread_rng, Rng};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Block {
@@ -236,7 +236,7 @@ impl Game {
         return self.score;
     }
 
-    pub fn inc_score(&mut self) {
+    fn inc_score(&mut self) {
         self.score += 1;
     }
 
