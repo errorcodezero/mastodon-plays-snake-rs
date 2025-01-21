@@ -37,7 +37,9 @@ async fn main() -> Result<(), megalodon::error::Error> {
             language: Some("en".to_string()),
             ..Default::default()
         };
-        let _post = client.post_status(game.to_string(), Some(&post_options)).await?;
+        let _post = client
+            .post_status(game.to_string(), Some(&post_options))
+            .await?;
         time::sleep(Duration::from_secs(1860)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
@@ -62,7 +64,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
             });
             if most_voted == "⬆️" {
                 game.move_snake(Direction::Up);
-            } else if most_voted == "⬇️"{
+            } else if most_voted == "⬇️" {
                 game.move_snake(Direction::Down);
             } else if most_voted == "⬅️" {
                 game.move_snake(Direction::Left);
@@ -73,5 +75,4 @@ async fn main() -> Result<(), megalodon::error::Error> {
             game.setup();
         }
     }
-    // Ok(())
 }
