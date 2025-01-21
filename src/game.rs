@@ -61,17 +61,26 @@ impl Game {
     }
 
     fn update_grid(&mut self) {
+        let mut flag = false;
         self.grid = [[Block::Empty; 5]; 5];
 
-        self.snake
-            .iter()
-            .rev()
-            .skip(1)
-            .for_each(|x| self.grid[x.1][x.0] = Block::SnakeBody);
+        self.snake.iter().rev().skip(1).for_each(|x| {
+            while !flag {
+                if self.grid[x.1][x.0] == Block::Empty || self.grid[x.1][x.0] == Block::Food {
+                    self.grid[x.1][x.0] = Block::SnakeBody
+                } else {
+                    flag = true;
+                }
+            }
+        });
 
-        self.grid[self.food.1][self.food.0] = Block::Food;
-        self.grid[self.snake[self.snake.len() - 1].1][self.snake[self.snake.len() - 1].0] =
-            Block::SnakeHead;
+        if !flag {
+            self.grid[self.food.1][self.food.0] = Block::Food;
+            self.grid[self.snake[self.snake.len() - 1].1][self.snake[self.snake.len() - 1].0] =
+                Block::SnakeHead;
+        } else {
+            self.setup();
+        }
     }
 
     fn move_food(&mut self) {
@@ -222,5 +231,19 @@ impl Game {
 
     pub fn inc_score(&mut self) {
         self.score += 1;
+    }
+
+    pub fn get_directions(&self) -> (Direction, Direction, Direction, Option<Direction>) {
+        if let Some(i) = &self.direction {
+            let valid = i.get_valid_dir();
+            (valid.0, valid.1, valid.2, None)
+        } else {
+            (
+                Direction::Up,
+                Direction::Down,
+                Direction::Left,
+                Some(Direction::Right),
+            )
+        }
     }
 }
