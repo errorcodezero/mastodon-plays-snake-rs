@@ -30,7 +30,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
         let post_options: PostStatusInputOptions = PostStatusInputOptions {
             poll: Some(PollOptions {
                 options: poll_choices,
-                expires_in: Some(300),
+                expires_in: Some(1800),
                 hide_totals: Some(false),
                 multiple: Some(false),
             }),
@@ -38,7 +38,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
             ..Default::default()
         };
         let _post = client.post_status(game.to_string(), Some(&post_options)).await?;
-        time::sleep(Duration::from_secs(30)).await;
+        time::sleep(Duration::from_secs(1860)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
             ..Default::default()
