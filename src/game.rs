@@ -19,12 +19,21 @@ pub enum Direction {
 }
 
 impl Direction {
-    pub fn get_valid_dir(&self) -> (Direction, Direction, Direction) {
+    fn get_valid_dir(&self) -> (Direction, Direction, Direction) {
         match self {
             Direction::Up => (Direction::Up, Direction::Left, Direction::Right),
             Direction::Down => (Direction::Down, Direction::Left, Direction::Right),
             Direction::Left => (Direction::Left, Direction::Up, Direction::Down),
             Direction::Right => (Direction::Right, Direction::Up, Direction::Down),
+        }
+    }
+
+    pub fn get_emoji(&self) -> &str {
+        match self {
+            Direction::Up => "⬆️",
+            Direction::Down => "⬇️",
+            Direction::Left => "⬅️",
+            Direction::Right => "➡️",
         }
     }
 }
