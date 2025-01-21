@@ -77,7 +77,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
                 if let Some(i) = game.get_current_direction() {
                     game.move_snake(i);
                 } else {
-                    game.move_snake(i);
+                    game.move_snake(Direction::Up);
                 }
             }
         } else {
