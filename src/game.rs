@@ -26,12 +26,12 @@ impl Direction {
         }
     }
 
-    pub fn get_emoji(&self) -> &str {
+    pub fn get_emoji(&self) -> String {
         match self {
-            Direction::Up => "⬆️",
-            Direction::Down => "⬇️",
-            Direction::Left => "⬅️",
-            Direction::Right => "➡️",
+            Direction::Up => "⬆️".to_string(),
+            Direction::Down => "⬇️".to_string(),
+            Direction::Left => "⬅️".to_string(),
+            Direction::Right => "➡️".to_string(),
         }
     }
 }
