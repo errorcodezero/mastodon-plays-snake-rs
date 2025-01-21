@@ -8,7 +8,7 @@ pub enum Block {
     Food,
 }
 
-#[derive(PartialEq, Eq, Debug, Copy)]
+#[derive(PartialEq, Eq, Debug, Copy, Clone)]
 pub enum Direction {
     Up,
     Down,
