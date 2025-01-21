@@ -8,7 +8,7 @@ pub enum Block {
     Food,
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Copy)]
 pub enum Direction {
     Up,
     Down,
@@ -252,5 +252,9 @@ impl Game {
                 Some(Direction::Right),
             )
         }
+    }
+
+    pub fn get_current_direction(&self) ->Option<Direction> {
+        self.direction
     }
 }

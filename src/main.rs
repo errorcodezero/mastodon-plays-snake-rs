@@ -73,6 +73,12 @@ async fn main() -> Result<(), megalodon::error::Error> {
                 game.move_snake(Direction::Left);
             } else if most_voted == "➡️" {
                 game.move_snake(Direction::Right);
+            } else {
+                if let Some(i) = game.get_current_direction() {
+                    game.move_snake(i);
+                } else {
+                    game.move_snake(i);
+                }
             }
         } else {
             game.setup();
