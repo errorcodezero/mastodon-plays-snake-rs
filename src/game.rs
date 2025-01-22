@@ -64,6 +64,7 @@ impl Game {
         coord.1 = rng.gen_range(0..5);
 
         self.snake = vec![coord];
+        self.score = 0;
         self.move_food();
     }
 
