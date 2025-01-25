@@ -73,7 +73,7 @@ impl Game {
         self.grid = [[Block::Empty; 5]; 5];
 
         self.snake.iter().rev().skip(1).for_each(|x| {
-            while !flag {
+            if !flag {
                 if self.grid[x.1][x.0] == Block::Empty || self.grid[x.1][x.0] == Block::Food {
                     self.grid[x.1][x.0] = Block::SnakeBody
                 } else {
@@ -101,8 +101,7 @@ impl Game {
         let mut rng = thread_rng();
         self.food.0 = rng.gen_range(0..5);
         self.food.1 = rng.gen_range(0..5);
-        while self.grid[self.food.1][self.food.0] == Block::SnakeBody
-            || self.grid[self.food.1][self.food.0] == Block::SnakeHead
+        while self.snake.contains(&self.food)
         {
             self.food.0 = rng.gen_range(0..5);
             self.food.1 = rng.gen_range(0..5);
@@ -220,7 +219,7 @@ impl Game {
             if !flag {
                 self.snake.push(coord);
 
-                if coord.0 != self.food.0 || coord.1 != self.food.1 {
+                if coord.1 != self.food.1 || coord.0 != self.food.0 {
                     self.snake.remove(0);
                     self.update_grid();
                 } else {
