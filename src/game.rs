@@ -84,14 +84,20 @@ impl Game {
 
         if !flag {
             self.grid[self.food.1][self.food.0] = Block::Food;
-            self.grid[self.snake[self.snake.len() - 1].1][self.snake[self.snake.len() - 1].0] =
-                Block::SnakeHead;
+            if let Some(head) = self.snake.last() {
+                self.grid[head.1][head.0] = Block::SnakeHead;
+            } else {
+                self.setup();
+            }
         } else {
             self.setup();
         }
     }
 
     fn move_food(&mut self) {
+        // Just so that current position of snake is updated onto the grid
+        self.update_grid();
+
         let mut rng = thread_rng();
         self.food.0 = rng.gen_range(0..5);
         self.food.1 = rng.gen_range(0..5);
@@ -119,7 +125,8 @@ impl Game {
                 match direction {
                     Direction::Up => {
                         if coord.1 > 0 {
-                            coord.1 -= 1
+                            coord.1 -= 1;
+                            self.direction = Some(Direction::Up);
                         } else {
                             self.setup();
                             flag = true;
@@ -127,7 +134,8 @@ impl Game {
                     }
                     Direction::Down => {
                         if coord.1 < 4 {
-                            coord.1 += 1
+                            coord.1 += 1;
+                            self.direction = Some(Direction::Down);
                         } else {
                             self.setup();
                             flag = true;
@@ -135,7 +143,8 @@ impl Game {
                     }
                     Direction::Left => {
                         if coord.0 > 0 {
-                            coord.0 -= 1
+                            coord.0 -= 1;
+                            self.direction = Some(Direction::Left);
                         } else {
                             self.setup();
                             flag = true;
@@ -143,7 +152,8 @@ impl Game {
                     }
                     Direction::Right => {
                         if coord.0 < 4 {
-                            coord.0 += 1
+                            coord.0 += 1;
+                            self.direction = Some(Direction::Right);
                         } else {
                             self.setup();
                             flag = true;
@@ -156,7 +166,7 @@ impl Game {
             if !flag {
                 self.snake.push(coord);
 
-                if coord.0 != self.food.0 || coord.1 != self.food.1 {
+                if coord.1 != self.food.1 || coord.0 != self.food.0 {
                     self.snake.remove(0);
                     self.update_grid();
                 } else {
@@ -171,7 +181,8 @@ impl Game {
             match direction {
                 Direction::Up => {
                     if coord.1 > 0 {
-                        coord.1 -= 1
+                        coord.1 -= 1;
+                        self.direction = Some(Direction::Up);
                     } else {
                         self.setup();
                         flag = true;
@@ -179,7 +190,8 @@ impl Game {
                 }
                 Direction::Down => {
                     if coord.1 < 4 {
-                        coord.1 += 1
+                        coord.1 += 1;
+                        self.direction = Some(Direction::Down);
                     } else {
                         self.setup();
                         flag = true;
@@ -187,7 +199,8 @@ impl Game {
                 }
                 Direction::Left => {
                     if coord.0 > 0 {
-                        coord.0 -= 1
+                        coord.0 -= 1;
+                        self.direction = Some(Direction::Left);
                     } else {
                         self.setup();
                         flag = true;
@@ -195,7 +208,8 @@ impl Game {
                 }
                 Direction::Right => {
                     if coord.0 < 4 {
-                        coord.0 += 1
+                        coord.0 += 1;
+                        self.direction = Some(Direction::Right);
                     } else {
                         self.setup();
                         flag = true;
@@ -242,7 +256,14 @@ impl Game {
     }
 
     pub fn get_directions(&self) -> (Direction, Direction, Direction, Option<Direction>) {
-        if let Some(i) = &self.direction {
+        if self.snake.len() == 1 {
+            (
+                Direction::Up,
+                Direction::Down,
+                Direction::Left,
+                Some(Direction::Right)
+            )
+        } else if let Some(i) = &self.direction {
             let valid = i.get_valid_dir();
             (valid.0, valid.1, valid.2, None)
         } else {
@@ -255,7 +276,7 @@ impl Game {
         }
     }
 
-    pub fn get_current_direction(&self) ->Option<Direction> {
+    pub fn get_current_direction(&self) -> Option<Direction> {
         self.direction
     }
 }

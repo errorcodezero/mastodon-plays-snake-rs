@@ -43,7 +43,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
                 Some(&post_options),
             )
             .await?;
-        time::sleep(Duration::from_secs(1860)).await;
+        time::sleep(Duration::from_secs(30)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
             ..Default::default()
