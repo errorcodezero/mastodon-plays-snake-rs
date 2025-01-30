@@ -131,7 +131,7 @@ impl Game {
                     }
                 }
                 Direction::Down => {
-                    if coord.1 < 4 {
+                    if coord.1 < 5 {
                         coord.1 += 1;
                         self.direction = Direction::Down;
                     } else {
@@ -149,7 +149,7 @@ impl Game {
                     }
                 }
                 Direction::Right => {
-                    if coord.0 < 4 {
+                    if coord.0 < 5 {
                         coord.0 += 1;
                         self.direction = Direction::Right;
                     } else {
