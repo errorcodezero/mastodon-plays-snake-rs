@@ -3,6 +3,7 @@ use game::Direction;
 use megalodon::megalodon::{GetAccountStatusesInputOptions, PollOptions, PostStatusInputOptions};
 use std::{env, time::Duration};
 use tokio::time;
+use rand::prelude::SliceRandom;
 
 pub mod game;
 
@@ -43,7 +44,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
                 Some(&post_options),
             )
             .await?;
-        time::sleep(Duration::from_secs(1800)).await;
+        time::sleep(Duration::from_secs(30)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
             ..Default::default()
@@ -55,29 +56,30 @@ async fn main() -> Result<(), megalodon::error::Error> {
         let poll = posts[0].poll.clone();
         if let Some(poll) = poll {
             let mut max_votes = 0;
-            let mut most_voted = "".to_string();
+            let mut most_voted: Vec<String> = vec![];
             let _ = poll.options.iter().for_each(|x| {
                 if let Some(votes) = x.votes_count {
-                    if votes > max_votes {
+                    if votes == max_votes {
                         max_votes = votes;
-                        // again with the .clone()
-                        most_voted = x.title.clone();
+                        most_voted.push(x.title.clone());
+                    } if votes > max_votes {
+                        max_votes = votes;
+                        most_voted = vec![x.title.clone()];
                     }
                 }
             });
-            if most_voted == "⬆️" {
-                game.move_snake(Direction::Up);
-            } else if most_voted == "⬇️" {
-                game.move_snake(Direction::Down);
-            } else if most_voted == "⬅️" {
-                game.move_snake(Direction::Left);
-            } else if most_voted == "➡️" {
-                game.move_snake(Direction::Right);
-            } else {
-                if let Some(i) = game.get_current_direction() {
-                    game.move_snake(i);
-                } else {
+            let most_voted = most_voted.choose(&mut rand::thread_rng());
+            if let Some(most_voted) = most_voted {
+                if most_voted == "⬆️" {
                     game.move_snake(Direction::Up);
+                } else if most_voted == "⬇️" {
+                    game.move_snake(Direction::Down);
+                } else if most_voted == "⬅️" {
+                    game.move_snake(Direction::Left);
+                } else if most_voted == "➡️" {
+                    game.move_snake(Direction::Right);
+                } else {
+                    game.move_snake(game.get_current_direction());
                 }
             }
         } else {
