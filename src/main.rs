@@ -1,9 +1,9 @@
 use crate::game::Game;
 use game::Direction;
 use megalodon::megalodon::{GetAccountStatusesInputOptions, PollOptions, PostStatusInputOptions};
+use rand::prelude::SliceRandom;
 use std::{env, time::Duration};
 use tokio::time;
-use rand::prelude::SliceRandom;
 
 pub mod game;
 
@@ -62,7 +62,8 @@ async fn main() -> Result<(), megalodon::error::Error> {
                     if votes == max_votes {
                         max_votes = votes;
                         most_voted.push(x.title.clone());
-                    } if votes > max_votes {
+                    }
+                    if votes > max_votes {
                         max_votes = votes;
                         most_voted = vec![x.title.clone()];
                     }

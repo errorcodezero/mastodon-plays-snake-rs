@@ -110,69 +110,68 @@ impl Game {
     }
 
     pub fn move_snake(&mut self, direction: Direction) {
-        //if let Some(i) = &self.direction {
-            let valid_moves = &self.get_directions();
-            let mut coord = *self.snake.last().unwrap();
-            let mut flag = false;
-            if direction == valid_moves.0
-                || direction == valid_moves.1
-                || direction == valid_moves.2
-                || Some(direction) == valid_moves.3
-            {
-                // Change in y is reversed since a smaller y value means an array closer to the
-                // top. Change in x is the still the same though.
-                match direction {
-                    Direction::Up => {
-                        if coord.1 > 0 {
-                            coord.1 -= 1;
-                            self.direction = Direction::Up;
-                        } else {
-                            self.setup();
-                            flag = true;
-                        }
-                    }
-                    Direction::Down => {
-                        if coord.1 < 4 {
-                            coord.1 += 1;
-                            self.direction = Direction::Down;
-                        } else {
-                            self.setup();
-                            flag = true;
-                        }
-                    }
-                    Direction::Left => {
-                        if coord.0 > 0 {
-                            coord.0 -= 1;
-                            self.direction = Direction::Left;
-                        } else {
-                            self.setup();
-                            flag = true;
-                        }
-                    }
-                    Direction::Right => {
-                        if coord.0 < 4 {
-                            coord.0 += 1;
-                            self.direction = Direction::Right;
-                        } else {
-                            self.setup();
-                            flag = true;
-                        }
+        let valid_moves = &self.get_directions();
+        let mut coord = *self.snake.last().unwrap();
+        let mut flag = false;
+        if direction == valid_moves.0
+            || direction == valid_moves.1
+            || direction == valid_moves.2
+            || Some(direction) == valid_moves.3
+        {
+            // Change in y is reversed since a smaller y value means an array closer to the
+            // top. Change in x is the still the same though.
+            match direction {
+                Direction::Up => {
+                    if coord.1 > 0 {
+                        coord.1 -= 1;
+                        self.direction = Direction::Up;
+                    } else {
+                        self.setup();
+                        flag = true;
                     }
                 }
-            } else {
-                panic!("Direction is not valid.");
+                Direction::Down => {
+                    if coord.1 < 4 {
+                        coord.1 += 1;
+                        self.direction = Direction::Down;
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
+                Direction::Left => {
+                    if coord.0 > 0 {
+                        coord.0 -= 1;
+                        self.direction = Direction::Left;
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
+                Direction::Right => {
+                    if coord.0 < 4 {
+                        coord.0 += 1;
+                        self.direction = Direction::Right;
+                    } else {
+                        self.setup();
+                        flag = true;
+                    }
+                }
             }
-            if !flag {
-                self.snake.push(coord);
+        } else {
+            panic!("Direction is not valid.");
+        }
+        if !flag {
+            self.snake.push(coord);
 
-                if coord.1 != self.food.1 || coord.0 != self.food.0 {
-                    self.snake.remove(0);
-                    self.update_grid();
-                } else {
-                    self.inc_score();
-                    self.move_food();
-                }
+            if coord.1 != self.food.1 || coord.0 != self.food.0 {
+                self.snake.remove(0);
+                self.update_grid();
+            } else {
+                self.inc_score();
+                self.move_food();
             }
+        }
     }
 
     pub fn to_string(&self) -> String {
