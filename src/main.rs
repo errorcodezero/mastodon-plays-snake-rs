@@ -13,13 +13,21 @@ async fn main() -> Result<(), megalodon::error::Error> {
     let access_token = env::var("ACCESS_TOKEN").unwrap();
     let client = megalodon::generator(megalodon::SNS::Mastodon, instance, Some(access_token), None)
         .expect("Valid mastodon instance and access token.");
-
+    let id = env::var("ID").unwrap();
+    
     let mut game = Game::new();
     game.setup();
 
+    //let backup = client.get_account(id).await?;
+    //
+    //let backup = backup.json;
+    //
+    //print!("{:#?}", backup.fields);
+
     loop {
-        let directions = game.get_directions();
         let id = env::var("ID").unwrap();
+
+        let directions = game.get_directions();
         let mut poll_choices = vec![
             directions.0.get_emoji(),
             directions.1.get_emoji(),
@@ -40,7 +48,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
         };
         let _post = client
             .post_status(
-                game.to_string() + "\n\n" + "Score: " + &game.get_score().to_string(),
+                game.to_string(),
                 Some(&post_options),
             )
             .await?;

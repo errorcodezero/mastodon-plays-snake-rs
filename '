@@ -264,13 +264,9 @@ impl Game {
             } else {
                 if i % 2 == 1 {
                     self.snake.push((0, 0));
-                    self.snake.last_mut().unwrap().0 = x.parse().unwrap();
-                } else {
-                    self.snake.last_mut().unwrap().1 = x.parse().unwrap();
+                    self.snake.last_mut().unwrap().0 = x;
                 }
             }
         }
-
-        self.update_grid();
     }
 }
