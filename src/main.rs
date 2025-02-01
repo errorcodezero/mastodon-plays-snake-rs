@@ -83,7 +83,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
         let _post = client
             .post_status(game.to_string(), Some(&post_options))
             .await?;
-        time::sleep(Duration::from_secs(15)).await;
+        time::sleep(Duration::from_secs(1800)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
             ..Default::default()
