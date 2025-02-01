@@ -1,6 +1,9 @@
 use crate::game::Game;
 use game::Direction;
-use megalodon::megalodon::{GetAccountStatusesInputOptions, PollOptions, PostStatusInputOptions};
+use megalodon::megalodon::{
+    CredentialsFieldAttribute, GetAccountStatusesInputOptions, PollOptions, PostStatusInputOptions,
+    UpdateCredentialsInputOptions,
+};
 use rand::prelude::SliceRandom;
 use std::{env, time::Duration};
 use tokio::time;
@@ -14,15 +17,46 @@ async fn main() -> Result<(), megalodon::error::Error> {
     let client = megalodon::generator(megalodon::SNS::Mastodon, instance, Some(access_token), None)
         .expect("Valid mastodon instance and access token.");
     let id = env::var("ID").unwrap();
-    
+
     let mut game = Game::new();
     game.setup();
 
-    //let backup = client.get_account(id).await?;
-    //
-    //let backup = backup.json;
-    //
-    //print!("{:#?}", backup.fields);
+    let account = client.get_account(id).await?;
+
+    let fields = account.json.fields;
+    let mut backup_exists = false;
+
+    for field in fields {
+        if field.name == "_backup" {
+            game.import(field.value);
+            backup_exists = true;
+        }
+    }
+
+    if !backup_exists {
+        let opt = UpdateCredentialsInputOptions {
+            fields_attributes: Some(vec![
+                CredentialsFieldAttribute {
+                    name: "Updates".to_string(),
+                    value: "Every 30 Minutes".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Website".to_string(),
+                    value: "https://errorcodezero.dev".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Source Code".to_string(),
+                    value: "https://github.com/errorcodezero/mastodon-plays-snake-rs".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "_backup".to_string(),
+                    value: game.create_backup(),
+                },
+            ]),
+            ..Default::default()
+        };
+        client.update_credentials(Some(&opt)).await?;
+    }
 
     loop {
         let id = env::var("ID").unwrap();
@@ -47,12 +81,9 @@ async fn main() -> Result<(), megalodon::error::Error> {
             ..Default::default()
         };
         let _post = client
-            .post_status(
-                game.to_string(),
-                Some(&post_options),
-            )
+            .post_status(game.to_string(), Some(&post_options))
             .await?;
-        time::sleep(Duration::from_secs(1800)).await;
+        time::sleep(Duration::from_secs(15)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
             ..Default::default()
@@ -94,5 +125,28 @@ async fn main() -> Result<(), megalodon::error::Error> {
         } else {
             game.setup();
         }
+
+        let opt = UpdateCredentialsInputOptions {
+            fields_attributes: Some(vec![
+                CredentialsFieldAttribute {
+                    name: "Updates".to_string(),
+                    value: "Every 30 Minutes".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Website".to_string(),
+                    value: "https://errorcodezero.dev".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Source Code".to_string(),
+                    value: "https://github.com/errorcodezero/mastodon-plays-snake-rs".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "_backup".to_string(),
+                    value: game.create_backup(),
+                },
+            ]),
+            ..Default::default()
+        };
+        client.update_credentials(Some(&opt)).await?;
     }
 }
