@@ -26,7 +26,7 @@ impl Direction {
         }
     }
 
-    fn from_str(&mut self, string: &str) {
+    fn import_str(&mut self, string: &str) {
         let dir = match string {
             "u" => Some(Direction::Up),
             "d" => Some(Direction::Down),
@@ -66,7 +66,14 @@ pub struct Game {
     snake: Vec<(usize, usize)>,
     food: (usize, usize),
     score: u8,
+    high_score: u8,
     direction: Direction,
+}
+
+impl Default for Game {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Game {
@@ -74,6 +81,7 @@ impl Game {
         Self {
             grid: [[Block::Empty; 6]; 6],
             score: 0,
+            high_score: 0,
             food: (0, 0),
             snake: vec![],
             direction: Direction::Up,
@@ -192,11 +200,15 @@ impl Game {
                 self.update_grid();
             } else {
                 self.score += 1;
+                if self.score > self.high_score {
+                    self.score = self.high_score;
+                }
                 self.move_food();
             }
         }
     }
 
+    #[allow(clippy::style)]
     pub fn to_string(&self) -> String {
         let mut string = String::from("");
         for row in &self.grid {
@@ -257,20 +269,26 @@ impl Game {
 
         for (i, x) in iter.enumerate() {
             if i == 0 {
-                self.direction.from_str(x);
+                self.direction.import_str(x);
             } else if i < 3 {
                 *ptr = x.parse().unwrap();
                 ptr = &mut self.food.1;
+            } else if i % 2 == 1 {
+                self.snake.push((0, 0));
+                self.snake.last_mut().unwrap().0 = x.parse().unwrap();
             } else {
-                if i % 2 == 1 {
-                    self.snake.push((0, 0));
-                    self.snake.last_mut().unwrap().0 = x.parse().unwrap();
-                } else {
-                    self.snake.last_mut().unwrap().1 = x.parse().unwrap();
-                }
+                self.snake.last_mut().unwrap().1 = x.parse().unwrap();
             }
         }
 
         self.update_grid();
+    }
+
+    pub fn get_highscore(&self) -> u8 {
+        self.high_score
+    }
+
+    pub fn import_highscore(&mut self, score: u8) {
+        self.high_score = score;
     }
 }

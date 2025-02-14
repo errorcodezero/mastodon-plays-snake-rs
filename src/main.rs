@@ -5,6 +5,7 @@ use megalodon::megalodon::{
     UpdateCredentialsInputOptions,
 };
 use rand::prelude::SliceRandom;
+use std::num::ParseIntError;
 use std::{env, time::Duration};
 use tokio::time;
 
@@ -25,28 +26,41 @@ async fn main() -> Result<(), megalodon::error::Error> {
 
     let fields = account.json.fields;
     let mut backup_exists = false;
+    let mut high_score_exists = false;
 
     for field in fields {
         if field.name == "_backup" {
             game.import(field.value);
             backup_exists = true;
+        } else if field.name == "High Score" {
+            let score: Result<u8, ParseIntError> = field.value.parse();
+            match score {
+                Ok(score) => game.import_highscore(score),
+                Err(_) => game.import_highscore(0),
+            }
+            high_score_exists = true;
         }
     }
 
-    if !backup_exists {
+    let mut high_score = 0;
+    if high_score_exists {
+        high_score = game.get_highscore();
+    }
+
+    if !backup_exists || !high_score_exists {
         let opt = UpdateCredentialsInputOptions {
             fields_attributes: Some(vec![
                 CredentialsFieldAttribute {
-                    name: "Updates".to_string(),
-                    value: "Every 30 Minutes".to_string(),
-                },
-                CredentialsFieldAttribute {
-                    name: "Website".to_string(),
-                    value: "https://errorcodezero.dev".to_string(),
+                    name: "High Score".to_string(),
+                    value: high_score.to_string(),
                 },
                 CredentialsFieldAttribute {
                     name: "Source Code".to_string(),
                     value: "https://github.com/errorcodezero/mastodon-plays-snake-rs".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Website".to_string(),
+                    value: "https://errorcodezero.dev".to_string(),
                 },
                 CredentialsFieldAttribute {
                     name: "_backup".to_string(),
@@ -96,7 +110,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
         if let Some(poll) = poll {
             let mut max_votes = 0;
             let mut most_voted: Vec<String> = vec![];
-            let _ = poll.options.iter().for_each(|x| {
+            poll.options.iter().for_each(|x| {
                 if let Some(votes) = x.votes_count {
                     if votes == max_votes {
                         max_votes = votes;
@@ -129,16 +143,16 @@ async fn main() -> Result<(), megalodon::error::Error> {
         let opt = UpdateCredentialsInputOptions {
             fields_attributes: Some(vec![
                 CredentialsFieldAttribute {
-                    name: "Updates".to_string(),
-                    value: "Every 30 Minutes".to_string(),
-                },
-                CredentialsFieldAttribute {
-                    name: "Website".to_string(),
-                    value: "https://errorcodezero.dev".to_string(),
+                    name: "High Score".to_string(),
+                    value: game.get_highscore().to_string(),
                 },
                 CredentialsFieldAttribute {
                     name: "Source Code".to_string(),
                     value: "https://github.com/errorcodezero/mastodon-plays-snake-rs".to_string(),
+                },
+                CredentialsFieldAttribute {
+                    name: "Website".to_string(),
+                    value: "https://errorcodezero.dev".to_string(),
                 },
                 CredentialsFieldAttribute {
                     name: "_backup".to_string(),
