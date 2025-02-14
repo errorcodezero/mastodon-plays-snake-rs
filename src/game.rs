@@ -281,6 +281,7 @@ impl Game {
             }
         }
 
+        self.score = self.snake.len() as u8;
         self.update_grid();
     }
 
