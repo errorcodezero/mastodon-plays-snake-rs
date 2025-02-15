@@ -201,7 +201,7 @@ impl Game {
             } else {
                 self.score += 1;
                 if self.score > self.high_score {
-                    self.score = self.high_score;
+                    self.high_score = self.score;
                 }
                 self.move_food();
             }
