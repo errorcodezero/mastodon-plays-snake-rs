@@ -100,6 +100,9 @@ async fn main() -> Result<(), megalodon::error::Error> {
         time::sleep(Duration::from_secs(1800)).await;
         let get_options = GetAccountStatusesInputOptions {
             limit: Some(1),
+            exclude_reblogs: Some(true),
+            exclude_replies: Some(true),
+            pinned: Some(false),
             ..Default::default()
         };
         let posts = client.get_account_statuses(id, Some(&get_options)).await?;
