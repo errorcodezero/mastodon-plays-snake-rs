@@ -4,7 +4,7 @@ use megalodon::megalodon::{
     CredentialsFieldAttribute, GetAccountStatusesInputOptions, PollOptions, PostStatusInputOptions,
     UpdateCredentialsInputOptions,
 };
-use rand::prelude::SliceRandom;
+use rand::seq::IndexedRandom;
 use std::num::ParseIntError;
 use std::{env, time::Duration};
 use tokio::time;
@@ -125,7 +125,7 @@ async fn main() -> Result<(), megalodon::error::Error> {
                     }
                 }
             });
-            let most_voted = most_voted.choose(&mut rand::thread_rng());
+            let most_voted = most_voted.choose(&mut rand::rng());
             if let Some(most_voted) = most_voted {
                 if most_voted == "⬆️" {
                     game.move_snake(Direction::Up);

@@ -1,4 +1,4 @@
-use rand::{thread_rng, Rng};
+use rand::{Rng, rng};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Block {
@@ -89,10 +89,10 @@ impl Game {
     }
 
     pub fn setup(&mut self) {
-        let mut rng = thread_rng();
+        let mut rng = rng();
         let mut coord = (0, 0);
-        coord.0 = rng.gen_range(0..6);
-        coord.1 = rng.gen_range(0..6);
+        coord.0 = rng.random_range(0..6);
+        coord.1 = rng.random_range(0..6);
 
         self.snake = vec![coord];
         self.score = 0;
@@ -129,12 +129,12 @@ impl Game {
         // Just so that current position of snake is updated onto the grid
         self.update_grid();
 
-        let mut rng = thread_rng();
-        self.food.0 = rng.gen_range(0..6);
-        self.food.1 = rng.gen_range(0..6);
+        let mut rng = rng();
+        self.food.0 = rng.random_range(0..6);
+        self.food.1 = rng.random_range(0..6);
         while self.snake.contains(&self.food) {
-            self.food.0 = rng.gen_range(0..6);
-            self.food.1 = rng.gen_range(0..6);
+            self.food.0 = rng.random_range(0..6);
+            self.food.1 = rng.random_range(0..6);
         }
 
         self.update_grid();

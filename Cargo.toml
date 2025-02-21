@@ -1,9 +1,9 @@
 [package]
 name = "mastodon-plays-snake-rs"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 tokio = { version = "1", features = ["rt", "time"] }
 megalodon = "1.0.0"
-rand = "0.8.5"
+rand = "0.9.0"
