@@ -1,5 +1,7 @@
 use rand::{Rng, rng};
 
+const SIZE: usize = 6;
+
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Block {
     SnakeBody,
@@ -60,7 +62,7 @@ impl Direction {
 }
 
 pub struct Game {
-    grid: [[Block; 6]; 6],
+    grid: [[Block; SIZE]; SIZE],
     // Snake vector is reversed where the head is the last element and the rest of the elements
     // comprise of the body.
     snake: Vec<(usize, usize)>,
@@ -79,7 +81,7 @@ impl Default for Game {
 impl Game {
     pub fn new() -> Self {
         Self {
-            grid: [[Block::Empty; 6]; 6],
+            grid: [[Block::Empty; SIZE]; SIZE],
             score: 0,
             high_score: 0,
             food: (0, 0),
@@ -91,8 +93,8 @@ impl Game {
     pub fn setup(&mut self) {
         let mut rng = rng();
         let mut coord = (0, 0);
-        coord.0 = rng.random_range(0..6);
-        coord.1 = rng.random_range(0..6);
+        coord.0 = rng.random_range(0..SIZE);
+        coord.1 = rng.random_range(0..SIZE);
 
         self.snake = vec![coord];
         self.score = 0;
@@ -101,7 +103,7 @@ impl Game {
 
     fn update_grid(&mut self) {
         let mut flag = false;
-        self.grid = [[Block::Empty; 6]; 6];
+        self.grid = [[Block::Empty; SIZE]; SIZE];
 
         self.snake.iter().rev().skip(1).for_each(|x| {
             if !flag {
@@ -130,11 +132,11 @@ impl Game {
         self.update_grid();
 
         let mut rng = rng();
-        self.food.0 = rng.random_range(0..6);
-        self.food.1 = rng.random_range(0..6);
+        self.food.0 = rng.random_range(0..SIZE);
+        self.food.1 = rng.random_range(0..SIZE);
         while self.snake.contains(&self.food) {
-            self.food.0 = rng.random_range(0..6);
-            self.food.1 = rng.random_range(0..6);
+            self.food.0 = rng.random_range(0..SIZE);
+            self.food.1 = rng.random_range(0..SIZE);
         }
 
         self.update_grid();
@@ -162,7 +164,7 @@ impl Game {
                     }
                 }
                 Direction::Down => {
-                    if coord.1 < 5 {
+                    if coord.1 < SIZE - 1 {
                         coord.1 += 1;
                         self.direction = Direction::Down;
                     } else {
@@ -180,7 +182,7 @@ impl Game {
                     }
                 }
                 Direction::Right => {
-                    if coord.0 < 5 {
+                    if coord.0 < SIZE - 1 {
                         coord.0 += 1;
                         self.direction = Direction::Right;
                     } else {
