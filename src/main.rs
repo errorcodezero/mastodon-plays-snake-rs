@@ -8,12 +8,13 @@ use rand::seq::IndexedRandom;
 use std::num::ParseIntError;
 use std::{env, time::Duration};
 use tokio::time;
+use tokio::net::TcpListener;
 
 pub mod game;
 
 #[tokio::main]
 async fn main() -> Result<(), megalodon::error::Error> {
-    let listener = TcpListener::bind("127.0.0.1:8080").expect("Failed to bind to address");
+    let listener = TcpListener::bind("127.0.0.1:8080").await.expect("Failed to bind to address");
 
     let instance = env::var("INSTANCE").unwrap();
     let access_token = env::var("ACCESS_TOKEN").unwrap();
