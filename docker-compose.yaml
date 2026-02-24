@@ -2,9 +2,7 @@ services:
  bot:
   env_file: .env
   restart: always
-  build:
-     context: ./
-     dockerfile: Dockerfile
+  image: ghcr.io/errorcodezero/mastodon-plays-snake-rs
   healthcheck:
    test: ["CMD", "curl", "-f", "http://mastodon.world"]
    interval: 1000s
