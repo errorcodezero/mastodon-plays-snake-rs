@@ -13,6 +13,8 @@ pub mod game;
 
 #[tokio::main]
 async fn main() -> Result<(), megalodon::error::Error> {
+    let listener = TcpListener::bind("127.0.0.1:8080").expect("Failed to bind to address");
+
     let instance = env::var("INSTANCE").unwrap();
     let access_token = env::var("ACCESS_TOKEN").unwrap();
     let client = megalodon::generator(megalodon::SNS::Mastodon, instance, Some(access_token), None)
