@@ -2,6 +2,6 @@ services:
  bot:
   env_file: .env
   restart: always
-  image: ghcr.io/errorcodezero/mastodon-plays-snake-rs
+  image: ghcr.io/errorcodezero/mastodon-plays-snake-rs:master
   ports:
     - 8080:8080
