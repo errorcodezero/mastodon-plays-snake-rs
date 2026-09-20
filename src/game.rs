@@ -134,12 +134,16 @@ impl Game {
         let mut rng = rng();
         self.food.0 = rng.random_range(0..SIZE);
         self.food.1 = rng.random_range(0..SIZE);
-        while self.snake.contains(&self.food) {
-            self.food.0 = rng.random_range(0..SIZE);
-            self.food.1 = rng.random_range(0..SIZE);
-        }
+        if self.snake.len() == (SIZE * SIZE) {
+            self.setup();
+        } else {
+            while self.snake.contains(&self.food) {
+                self.food.0 = rng.random_range(0..SIZE);
+                self.food.1 = rng.random_range(0..SIZE);
+            }
 
-        self.update_grid();
+            self.update_grid();
+        }
     }
 
     pub fn move_snake(&mut self, direction: Direction) {
